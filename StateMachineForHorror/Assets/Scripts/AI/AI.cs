@@ -47,7 +47,7 @@ public class Hide : IState
     bool PlayerDistSignifigant()
     {
         float dist = Vector3.Distance(playerPos, owner.transform.position);
-        if (dist > 30f)
+        if (dist > 60f)
         {
             return true;
         }else
@@ -116,6 +116,8 @@ public class GoToHidingSpot : IState
     Vector3 currentDestination;
     float moveSpeed;
 
+    float hidingDistFromPlayer = 50;
+
     void GetHidingSpots()
     {
         for(int i = 0; i < owner.hidingSpots.Length; i++)
@@ -160,7 +162,7 @@ public class GoToHidingSpot : IState
     Vector3 GetMoveToPos(Vector3 comparedPos)
     {
         Vector3 posToMoveTo = comparedPos;
-        posToMoveTo = Vector3.MoveTowards(posToMoveTo, owner.transform.position, 31);
+        posToMoveTo = Vector3.MoveTowards(posToMoveTo, owner.transform.position, hidingDistFromPlayer);
 
         
         return posToMoveTo;
@@ -214,6 +216,7 @@ public class GoToHidingSpot : IState
 
 public class GoToAmbush : IState
 {
+    StateMachine SM;
     AI owner;
     public GoToAmbush(AI owner) { this.owner = owner; }
 
@@ -259,6 +262,7 @@ public class GoToAmbush : IState
         else if (currentDestination == spotToMoveTo)
         {
             //Change state here
+            owner.state.ChangeState(new Ambush(owner));
         }
     }
 
@@ -287,6 +291,7 @@ public class GoToAmbush : IState
 
     public void Enter()
     {
+        SM = owner.state;
         moveSpeed = owner.moveSpeed;
         playerPredictedPos = owner.PredictPlayerPosition(owner.currPlayerTransform.position);
         ambushSpots = new Vector3[owner.ambushSpots.Length];
@@ -369,22 +374,6 @@ public class AI : MonoBehaviour {
     #endregion
 
 
-
-    void GoToAmbushSpot(Vector3 ambushPos)
-    {
-        
-    }
-
-    void SetUpAmbush()
-    {
-
-    }
-
-    void CatchPlayer()
-    {
-
-    }
-
     public Vector3 PredictPlayerPosition(Vector3 currPos)
     {
         Vector3 predictedPos = new Vector3(0, 0, 0);
@@ -435,10 +424,24 @@ public class AI : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
     {
+        for(int i = 0; i < ambushSpots.Length; i++)
+        {
+            string finder = "AmbushSpot (" + i + ")";
+            
+            ambushSpots[i] = GameObject.Find(finder);
+        }
+
+        for(int i = 0; i < hidingSpots.Length; i++)
+        {
+            string finder = "HidingSpot (" + i + ")";
+            hidingSpots[i] = GameObject.Find(finder);
+            Debug.Log(hidingSpots[i]);
+        }
+
         state.ChangeState(new GoToHidingSpot(this));
         NMA = GetComponent<NavMeshAgent>();
         Debug.Log(NMA.destination);
-	}
+    }
 	
 	// Update is called once per frame
 	void Update ()
