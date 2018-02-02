@@ -18,7 +18,7 @@ public class GoToHidingSpot : IState {
     Vector3 currentDestination;
     float moveSpeed;
 
-    float arrivalDistance = 1f;
+    float arrivalDistance = 1.5f;
 #endregion
 
     void GetHidingSpots()
@@ -32,6 +32,41 @@ public class GoToHidingSpot : IState {
 
     Vector3 ChooseHidingSpot()
     {
+        //Variables
+        Vector3 destination = new Vector3(0,0,0);
+        Vector3 currHidingPos = owner.currHidingSpot;
+
+        
+        if(currHidingPos == null)
+        {
+            currHidingPos = new Vector3(0, 0, 0);
+        }
+
+
+        float distToHidingPos = 2000000; //High number only for use in the loop to compare the lowest distance of hiding spots
+        foreach (Vector3 curr in hidingSpots)
+        {
+            float distToCurr = Vector3.Distance(owner.transform.position, curr);
+
+            if(distToCurr < distToHidingPos && curr != currHidingPos)
+            {
+                
+                float AIplayerAngle = Vector3.Angle(playerPos, owner.transform.position);
+                float AIcurrAngle = Vector3.Angle(curr, owner.transform.position);
+                if(AIcurrAngle < (AIplayerAngle + 45f))
+                {
+                    distToHidingPos = distToCurr;
+                    destination = curr;
+                }else if (AIcurrAngle > (AIplayerAngle - 45f))
+                {
+                    distToHidingPos = distToCurr;
+                    destination = curr;
+                }
+            }
+        }
+
+        return destination;
+        /*
         //Variables
         Vector3 destination = new Vector3(0, 0, 0);
         float distToCurrDest = 200000; // Set to a high number that the distance will never go over.
@@ -48,14 +83,15 @@ public class GoToHidingSpot : IState {
                 distToCurrDest = dist;
                 Debug.Log(destination);
             }
-        }
-        return destination;
+        }*/
+
     }
 
     bool CheckIfArrived(Vector3 destination)
     {
         //Get the distance between the AI and the spot he is travelling to.
         float distToSpot = Vector3.Distance(owner.transform.position, destination);
+        
         if (distToSpot < arrivalDistance)
         {
             //If the distance is less than 1 he has arrived
@@ -108,7 +144,7 @@ public class GoToHidingSpot : IState {
     bool CheckIfNearPlayer()
     {
         //Const variables
-        const float minDistFromPlayer = 45f;
+        const float minDistFromPlayer = 35f;
 
         float distFromPlayer = Vector3.Distance(owner.transform.position, playerPos);
         if(distFromPlayer <= minDistFromPlayer)
@@ -121,27 +157,80 @@ public class GoToHidingSpot : IState {
         }
     }
 
-    void MoveAwayFromPlayer()
+    /*Vector3 MoveAwayFromPlayer()
     {
         //Direction = (posA - posB) / distance[between posA and posB]
         Debug.Log("GET AWAY!");
-    }
+
+        const float moveAwayAmount = 15f;
+
+        Vector3 AiPlayerDir = playerPos - owner.transform.position;
+        float AiPlayerDist = Vector3.Distance(playerPos, owner.transform.position);
+        AiPlayerDir = AiPlayerDir / AiPlayerDist;
+
+        Vector3 AiHidingSpotDir = hidingPos;
+        float AiHideSpotDist = Vector3.Distance(hidingPos, owner.transform.position);
+        AiHidingSpotDir = AiHidingSpotDir / AiHideSpotDist;
+        float AiHidingSpotAngle = Vector3.Angle(hidingPos, owner.transform.position);
+
+        Vector3 newDir;
+
+        if(AiHidingSpotAngle >= 0)
+        {
+            newDir = AiPlayerDir + owner.transform.right;
+        }
+        else
+        {
+            newDir = AiPlayerDir - owner.transform.right;
+        }
+
+        Vector3 newMoveToPos = newDir * moveAwayAmount;
+
+        return newMoveToPos;
+        /*
+        Psudocode for checking if too close to player
+     
+        START
+        if(distanceToPlayer < certainDistance)
+            THEN
+        AItoPlayerDir = playerPos - AIpos
+        AItoPlayerDir =AItoPlayerDir / distBetweenAInPlayer
+
+        DirectionToHidingSpot = hidingSpotPos - AIpos
+        DirToHideAngle = getAngle(DirectionToHidingSpot)
+
+        if(DirToHideAngle > 0)
+           THEN
+        NewDir = AItoPlayerDir + RightDir
+        else
+            THEN
+        NewDir = AItoPlayerDir - RightDir
+
+        NewMoveToPos = NewDir * distanceToGo
+    
+    }*/
 
     void UpdatePlayerPos()
     {
         playerPos = owner.currPlayerTransform.position;
     }
 
+
+    
+
     public void Enter()
     {
-        //Get AI state machine
+        //Get AI's state machine
         SM = owner.state;
+
         //Set move speed of AI
         moveSpeed = owner.moveSpeed;
+
         //Get positions of player and hiding spots
         playerPos = owner.currPlayerTransform.position;
         hidingSpots = new Vector3[owner.hidingSpots.Length];
         GetHidingSpots();
+
         //Choose which hiding spot to go towards
         hidingPos = ChooseHidingSpot();
         currentDestination = hidingPos;
@@ -155,17 +244,33 @@ public class GoToHidingSpot : IState {
         
         owner.NMA.destination = currentDestination;
         //owner.transform.position = Vector3.MoveTowards(owner.transform.position, hidingPos, moveSpeed * Time.deltaTime);
-        if(CheckIfNearPlayer())
+
+        if(CheckIfArrived(currentDestination))
         {
-            MoveAwayFromPlayer();
+            owner.currHidingSpot = hidingPos;
+            SetToHideState();
+        }
+
+        /*if (CheckIfNearPlayer())
+        {
+            currentDestination = MoveAwayFromPlayer();
         }
         if (CheckIfArrived(currentDestination))
         {
-            SetToHideState();
-        }
+            if(currentDestination != hidingPos)
+            {
+                currentDestination = hidingPos;
+                //Debug.Log("Arrived at pos away from player");
+            }
+            else
+            {
+                SetToHideState();
+            }
+        }*/
         if(Input.GetKeyDown(KeyCode.Q))
         {
-            Debug.Log(currentDestination);
+            Debug.Log("CurrDest:" + currentDestination);
+            Debug.Log("HidingPos:" + hidingPos);
         }
     }
 

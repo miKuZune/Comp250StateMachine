@@ -56,6 +56,8 @@ public class AI : MonoBehaviour {
     public GameObject[] ambushSpots;
     public GameObject[] hidingSpots;
 
+    public Vector3 currHidingSpot = new Vector3(0,0,0);
+
     public float moveSpeed;
 
     //{Delete me plz}
@@ -130,9 +132,10 @@ public class AI : MonoBehaviour {
             //Debug.Log(hidingSpots[i]);
         }
 
-        state.ChangeState(new GoToHidingSpot(this));
+        
         NMA = GetComponent<NavMeshAgent>();
-        Debug.Log(NMA.destination);
+        state.ChangeState(new GoToHidingSpot(this));
+        Debug.Log(NMA);
     }
 	
 	// Update is called once per frame
