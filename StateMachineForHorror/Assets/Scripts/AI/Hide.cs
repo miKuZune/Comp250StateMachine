@@ -15,8 +15,9 @@ public class Hide : IState {
 
     bool PlayerDistSignifigant()
     {
+        float distToBeSignifigant = 60f;
         float dist = Vector3.Distance(playerPos, owner.transform.position);
-        if (dist > 60f)
+        if (dist > distToBeSignifigant)
         {
             return true;
         }
@@ -29,11 +30,13 @@ public class Hide : IState {
     bool CouldAmbush(Vector3 playerPredictedPos, Vector3[] ambushSpots)
     {
 
+        float distForPotentialAmbush = 25f;
+
         foreach (Vector3 curr in ambushSpots)
         {
             float dist = Vector3.Distance(playerPredictedPos, curr);
 
-            if (dist < 25)
+            if (dist < distForPotentialAmbush)
             {
                 return true;
             }
@@ -56,7 +59,9 @@ public class Hide : IState {
     public void Execute()
     {
         playerPos = owner.currPlayerTransform.position;
-        if (CouldAmbush(owner.PredictPlayerPosition(playerPos), ambushSpots) && Vector3.Distance(owner.transform.position, owner.currPlayerTransform.position) > 30.1f && Vector3.Distance(owner.transform.position, owner.PredictPlayerPosition(owner.currPlayerTransform.position)) > 30.1f)
+
+        Vector3 predictedPos = owner.PredictPlayerPosition(playerPos);
+        if (CouldAmbush(predictedPos, ambushSpots))
         {
             SM.ChangeState(new GoToAmbush(owner));
         }
