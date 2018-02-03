@@ -6,7 +6,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{26363B2A-7B98-2CD7-D7A0-42AE02CACD5A}</ProjectGuid>
+    <ProjectGuid>{07F148F3-C8A7-9210-E052-D9ECD09C7F2F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -47,6 +47,11 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\AI\AI.cs" />
+     <Compile Include="Assets\Scripts\AI\Ambush.cs" />
+     <Compile Include="Assets\Scripts\AI\GoToAmbush.cs" />
+     <Compile Include="Assets\Scripts\AI\GoToHidingSpot.cs" />
+     <Compile Include="Assets\Scripts\AI\Hide.cs" />
+     <Compile Include="Assets\Scripts\AmbushScript.cs" />
      <Compile Include="Assets\Scripts\CamController.cs" />
      <Compile Include="Assets\Scripts\Contacts.cs" />
      <Compile Include="Assets\Scripts\Movement.cs" />

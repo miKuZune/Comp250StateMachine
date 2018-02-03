@@ -49,6 +49,5 @@ public class Movement : MonoBehaviour {
     {
         MovementHandling(moveSpeed);
         WholeCharacterLook(sensitivity);
-
     }
 }
