@@ -29,20 +29,26 @@ public class Hide : IState {
 
     bool CouldAmbush(Vector3 playerPredictedPos, Vector3[] ambushSpots)
     {
-
-        float distForPotentialAmbush = 25f;
-
-        foreach (Vector3 curr in ambushSpots)
+        if(owner.timesPlayerPosUpdated >= owner.playerDir.Length)
         {
-            float dist = Vector3.Distance(playerPredictedPos, curr);
+            float distForPotentialAmbush = 15f;
 
-            if (dist < distForPotentialAmbush)
+            foreach (Vector3 curr in ambushSpots)
             {
-                return true;
-            }
-        }
+                float dist = Vector3.Distance(playerPredictedPos, curr);
 
-        return false;
+                if (dist < distForPotentialAmbush)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     public void Enter()
@@ -60,7 +66,8 @@ public class Hide : IState {
     {
         playerPos = owner.currPlayerTransform.position;
 
-        Vector3 predictedPos = owner.PredictPlayerPosition(playerPos);
+        //Vector3 predictedPos = owner.PredictPlayerPosition(playerPos);
+        Vector3 predictedPos = owner.PredictPlayerDirection();
         //Debug.Log("predicted: " + predictedPos);
         if (CouldAmbush(predictedPos, ambushSpots))
         {
@@ -71,6 +78,12 @@ public class Hide : IState {
             SM.ChangeState(new GoToHidingSpot(owner));
         }
 
+        if(Input.GetKeyDown(KeyCode.Q))
+        {
+            Vector3 spawnPos = playerPos + (owner.PredictPlayerDirection());
+            GameObject.Instantiate(owner.temp, spawnPos, Quaternion.identity);
+            Debug.Log(owner.timesPlayerPosUpdated);
+        }
     }
     public void Exit()
     {

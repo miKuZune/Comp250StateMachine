@@ -251,11 +251,6 @@ public class GoToHidingSpot : IState {
                 SetToHideState();
             }
         }*/
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            Debug.Log("CurrDest:" + currentDestination);
-            Debug.Log("HidingPos:" + hidingPos);
-        }
     }
 
     public void Exit()

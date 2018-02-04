@@ -4,10 +4,9 @@ using UnityEngine;
 
 public class GoToAmbush : IState {
 
-    StateMachine SM;
-    AI owner;
-    public GoToAmbush(AI owner) { this.owner = owner; }
 
+    #region LEGACY
+    /*
     //Variables
     Vector3[] ambushSpots;
     Vector3 playerPredictedPos;
@@ -81,7 +80,7 @@ public class GoToAmbush : IState {
     {
         SM = owner.state;
         moveSpeed = owner.moveSpeed;
-        playerPredictedPos = owner.PredictPlayerPosition(owner.currPlayerTransform.position);
+        //playerPredictedPos = owner.PredictPlayerPosition(owner.currPlayerTransform.position);
         ambushSpots = new Vector3[owner.ambushSpots.Length];
         for (int i = 0; i < ambushSpots.Length; i++)
         {
@@ -107,5 +106,29 @@ public class GoToAmbush : IState {
     public void Exit()
     {
         Debug.Log("Reached Ambush spot");
+    }*/
+    #endregion
+
+
+    StateMachine SM;
+    AI owner;
+    public GoToAmbush(AI owner) { this.owner = owner; }
+
+    //Variables
+    Vector3 ambushSpotToMoveTo;
+
+    public void Enter()
+    {
+
+    }
+
+    public void Execute()
+    {
+
+    }
+
+    public void Exit()
+    {
+
     }
 }

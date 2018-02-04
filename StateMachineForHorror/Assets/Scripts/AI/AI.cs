@@ -47,28 +47,69 @@ public class AI : MonoBehaviour {
     //Holds variables for tracking and predicting player movement
     const int playerTransformNum = 25;
     Vector3[] playerPos = new Vector3[playerTransformNum];
+    public Vector3[] playerDir = new Vector3[playerTransformNum];
     Quaternion[] playerRot = new Quaternion[playerTransformNum];
-    float updatePlayerPosTimer;
 
-    int timesPlayerPosUpdated = 0;
+    float updatePlayerPosTimer;
+    public int timesPlayerPosUpdated = 0;
 
 
     public GameObject[] ambushSpots;
     public GameObject[] hidingSpots;
 
     public Vector3 currHidingSpot = new Vector3(0,0,0);
+    public Vector3 ambushSpotToGoTo = new Vector3(0, 0, 0);
 
     public float moveSpeed;
 
     //{Delete me plz}
     public GameObject temp;
 
-    
-
     #endregion
 
 
-    public Vector3 PredictPlayerPosition(Vector3 currPos)
+    public Vector3 PredictPlayerDirection()
+    {
+        const float dirWeight = 10;
+        const float distanceMultiplier = 3.5f;
+        Vector3 predictedDir = new Vector3(0,0,0);
+
+
+        for(int i = 1; i < playerDir.Length; i++)
+        {
+            predictedDir += playerDir[i];
+        }
+
+        Vector3 weightedPrediction = playerDir[0] * dirWeight;
+
+        predictedDir = predictedDir / (playerDir.Length - 1 + dirWeight);
+
+        predictedDir += weightedPrediction;
+        predictedDir *= distanceMultiplier;
+       // predictedDir = predictedDir / playerDir.Length;
+
+        
+
+        return predictedDir;
+    }
+
+    void UpdatePlayerDirArray(Vector3 addedDir)
+    {
+        
+
+        Vector3 holdingVec = playerDir[0];
+        for (int i = 1; i < playerTransformNum; i++)
+        {
+            //Debug.Log(playerDir[i]);
+            Vector3 temp = playerDir[i];
+            playerDir[i] = holdingVec;
+            holdingVec = temp;
+        }
+        timesPlayerPosUpdated++;
+        playerDir[0] = addedDir;
+    }
+
+    /*public Vector3 PredictPlayerPosition(Vector3 currPos)
     {
         Vector3 predictedPos = new Vector3(0, 0, 0);
         Vector3 weightedDiff = new Vector3(0, 0, 0);
@@ -96,7 +137,7 @@ public class AI : MonoBehaviour {
         //Debug.Log("Predicted: " + predictedPos);
         //Instantiate(temp, predictedPos, Quaternion.identity);
         return predictedPos;
-    }
+    }*/
 
     void UpdatePlayerPositionArray(Vector3 position)
     {
@@ -105,6 +146,7 @@ public class AI : MonoBehaviour {
         Vector3 holdingVec = playerPos[0];
         for(int i = 1; i < playerTransformNum; i++)
         {
+            //Debug.Log(playerPos[i]);
             Vector3 temp = playerPos[i];
             playerPos[i] = holdingVec;
             holdingVec = temp;
@@ -144,7 +186,8 @@ public class AI : MonoBehaviour {
         //Track player position and add to array.
         if(updatePlayerPosTimer > 0.5f)
         {
-            UpdatePlayerPositionArray(currPlayerTransform.position);
+            //UpdatePlayerPositionArray(currPlayerTransform.position);
+            UpdatePlayerDirArray(currPlayerTransform.forward);
             updatePlayerPosTimer = 0;
         }
         //Predict where the player whill be based upon their movements
