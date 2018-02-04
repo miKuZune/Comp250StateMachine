@@ -53,7 +53,6 @@ public class AI : MonoBehaviour {
     float updatePlayerPosTimer;
     public int timesPlayerPosUpdated = 0;
 
-
     public GameObject[] ambushSpots;
     public GameObject[] hidingSpots;
 
