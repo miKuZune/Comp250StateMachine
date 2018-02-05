@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Movement : MonoBehaviour {
 
+    public int health;
+
     public float moveSpeed;
     public float sensitivity;
     public float jumpPower;
@@ -42,7 +44,13 @@ public class Movement : MonoBehaviour {
         transform.Rotate(0, mouseX, 0);
     }
 
+    void CheckIfDead()
+    {
+        if(health <= 0)
+        {
 
+        }
+    }
 
 	// Update is called once per frame
 	void Update ()

@@ -36,4 +36,14 @@ public class AmbushScript : MonoBehaviour {
         }
         
     }
+    void OnTriggerEnter(Collider coll)
+    {
+        if(active)
+        {
+            if(coll.gameObject.tag == "Player")
+            {
+                GameObject.Find("UIManager").GetComponent<UIManager>().ShowGameOver();
+            }
+        }
+    }
 }
