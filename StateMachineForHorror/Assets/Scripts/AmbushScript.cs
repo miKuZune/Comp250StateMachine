@@ -7,8 +7,6 @@ public class AmbushScript : MonoBehaviour {
     public GameObject objToMissplace;
 
     public Transform objNewTransformPos;
-
-    public GameObject hitBox;
     bool active;
 
 
@@ -22,23 +20,22 @@ public class AmbushScript : MonoBehaviour {
 
     void Update()
     {
-        if(!active)
+        float distFromAI = Vector3.Distance(AI.transform.position, transform.position);
+        if (distFromAI < signifigantDist)
         {
-            float distFromAI = Vector3.Distance(AI.transform.position, transform.position);
-            if (distFromAI < signifigantDist)
-            {
-                Debug.Log("Hello it me");
-            }
+            active = true;
+            objToMissplace.transform.position = objNewTransformPos.position;
+            objToMissplace.transform.rotation = objNewTransformPos.rotation;
         }
         else
         {
-
+            active = false;
         }
         
     }
     void OnTriggerEnter(Collider coll)
     {
-        if(active)
+        if (active)
         {
             if(coll.gameObject.tag == "Player")
             {
