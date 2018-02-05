@@ -6,6 +6,12 @@ public class Ambush : IState {
 
 	AI owner;
 
+    float timeAtSpot = 0;
+
+    const float signifigantTime = 20f;
+    const float distToBeSignifigant = 15f;
+
+
     public Ambush(AI owner) { this.owner = owner; }
 
     public void Enter()
@@ -14,7 +20,18 @@ public class Ambush : IState {
     }
     public void Execute()
     {
-        Debug.Log("Waiting to ambush");
+        if(timeAtSpot > signifigantTime)
+        {
+            
+            float distToPlayer = Vector3.Distance(owner.transform.position, owner.currPlayerTransform.transform.position);
+            if (distToPlayer > distToBeSignifigant)
+            {
+                owner.state.ChangeState(new GoToHidingSpot(owner));
+            }
+        }
+
+        
+        timeAtSpot += Time.deltaTime;
     }
     public void Exit()
     {

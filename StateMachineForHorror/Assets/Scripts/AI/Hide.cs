@@ -31,12 +31,12 @@ public class Hide : IState {
     {
         if(owner.timesPlayerPosUpdated >= owner.playerDir.Length)
         {
-            float distForPotentialAmbush = 25f;
+            float distForPotentialAmbush = 31f;
 
             for(int i = 0; i < ambushSpots.Length; i++)
             {
                 float dist = Vector3.Distance(playerPredictedPos, ambushSpots[i]);
-                Debug.Log(dist);
+                
                 if (dist < distForPotentialAmbush)
                 {
                     return true;

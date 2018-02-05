@@ -35,7 +35,7 @@ public class GoToHidingSpot : IState {
         //Variables
         Vector3 destination = new Vector3(0,0,0);
         Vector3 currHidingPos = owner.currHidingSpot;
-        float hidingSpotPlayerDistTooClose = 10f;
+        //float hidingSpotPlayerDistTooClose = 10f;
 
         
         if(currHidingPos == null)
