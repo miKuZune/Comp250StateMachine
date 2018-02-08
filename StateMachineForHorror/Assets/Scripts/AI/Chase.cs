@@ -34,7 +34,7 @@ public class Chase : IState
 
     public void CatchPlayer()
     {
-
+        Debug.Log("CaughtPlayer");
     }
 
     public void GoToLastKnownPlayerLocation()
@@ -52,10 +52,10 @@ public class Chase : IState
     bool CheckCanSeePlayer()
     {
 
-        Vector3 dirToPlayer = owner.transform.position - playerPos;
+        Vector3 dirToPlayer = playerPos - owner.transform.position;
 
         RaycastHit hitinfo;
-        if(Physics.Raycast(owner.transform.position, owner.transform.forward, out hitinfo))
+        if(Physics.Raycast(owner.transform.position, dirToPlayer, out hitinfo))
         {
             if(hitinfo.transform.gameObject.tag == "Player")
             {
@@ -85,19 +85,26 @@ public class Chase : IState
 
         if(CheckCanSeePlayer())
         {
+            Debug.Log("Can see player");
             destination = playerPos;
         }
-        else
-        {
-            destination = playerLastSeenPos;
-        }
         owner.NMA.destination = destination;
+        Debug.Log(destination);
 
         if(IfNearDestination(destination))
         {
             if(destination == playerPos)
             {
                 CatchPlayer();
+            }
+            else
+            {
+                Debug.Log("Not going to player pos");
+                if(!CheckCanSeePlayer())
+                {
+                    Debug.Log("Changing state");
+                    owner.state.ChangeState(new GoToHidingSpot(owner));
+                }
             }
         }
     }

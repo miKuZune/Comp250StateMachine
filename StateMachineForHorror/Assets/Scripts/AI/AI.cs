@@ -24,6 +24,11 @@ public class StateMachine
         currentState.Enter();
     }
 
+    public IState GetState()
+    {
+        return currentState;
+    }
+
     public void Update()
     {
         if(currentState != null)
@@ -156,6 +161,31 @@ public class AI : MonoBehaviour {
         timesPlayerPosUpdated++;
     }
 
+    bool CheckForChasePlayer()
+    {
+        bool canChase = false;
+
+        const float distToBeCloseEnough = 12.5f;
+        float distToPlayer = Vector3.Distance(transform.position, currPlayerTransform.position);
+
+        
+
+        if(distToPlayer <= distToBeCloseEnough)
+        {
+            Vector3 dirToPlayer = currPlayerTransform.position - transform.position;
+            RaycastHit hit;
+            if(Physics.Raycast(transform.position,dirToPlayer, out hit))
+            {
+                if(hit.transform.gameObject.tag == "Player")
+                {
+                     canChase = true;
+                }
+            }
+        }
+
+        return canChase;
+    }
+
 	// Use this for initialization
 	void Start ()
     {
@@ -182,6 +212,11 @@ public class AI : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
+        if(CheckForChasePlayer())
+        {
+            state.ChangeState(new Chase(this));            
+        }
+
         //Track player position and add to array.
         if(updatePlayerPosTimer > 0.5f)
         {
