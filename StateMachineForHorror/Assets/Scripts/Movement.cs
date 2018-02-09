@@ -12,6 +12,8 @@ public class Movement : MonoBehaviour {
 
     GameObject thisCamera;
     bool hasJumped;
+
+    const float distToSeeFloor = 0.9999f;
 	// Use this for initialization
 	void Start ()
     {
@@ -26,18 +28,39 @@ public class Movement : MonoBehaviour {
         var x = Input.GetAxis("Horizontal") * Time.deltaTime * moveSpeed;
         var z = Input.GetAxis("Vertical") * Time.deltaTime * moveSpeed;
 
+        
+
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            x = x * 2;
+            z = z * 2;
+        }
+
+        Vector3 translateBy = new Vector3(x, 0, z);
+
         transform.Translate(x, 0, z);
 
-        if(Input.GetKeyDown(KeyCode.Space))
+        if(Input.GetKeyDown(KeyCode.Space) && !hasJumped)
         {
             Rigidbody thisRB = GetComponent<Rigidbody>();
             Vector3 newVel = thisRB.velocity;
             newVel.y = jumpPower;
 
             thisRB.velocity = newVel;
+            hasJumped = true;
         }
+
+        
     }
 	
+    void CheckIfCanJump()
+    {
+        if(Physics.Raycast(transform.position, Vector3.down, distToSeeFloor))
+        {
+            hasJumped = false;
+        }
+    }
+
     void WholeCharacterLook(float sensitivity)
     {
         float mouseX = sensitivity * Input.GetAxis("Mouse X");
@@ -57,5 +80,6 @@ public class Movement : MonoBehaviour {
     {
         MovementHandling(moveSpeed);
         WholeCharacterLook(sensitivity);
+        CheckIfCanJump();
     }
 }
