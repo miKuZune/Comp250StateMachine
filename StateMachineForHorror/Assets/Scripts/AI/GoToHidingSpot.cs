@@ -67,6 +67,25 @@ public class GoToHidingSpot : IState {
             }
         }
 
+        //If no destination is found from the first loop this indicates that there is no closest hiding spot in the direction of the player.
+        //Hence the AI will find the closest spot without regarding the player.
+        if(destination == new Vector3(0,0,0))
+        {
+            for(int i = 0; i < hidingSpots.Length; i++)
+            {
+                if(hidingSpots[i].position != currHidingPos)
+                {
+                    float distToHidingSpot = Vector3.Distance(owner.transform.position, hidingSpots[i].position);
+
+                    if(distToHidingSpot < distToChosenSpot)
+                    {
+                        distToChosenSpot = distToHidingSpot;
+                        destination = hidingSpots[i].position;
+                    }
+                }
+            }
+        }
+
         return destination;
     }
 

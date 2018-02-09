@@ -148,7 +148,6 @@ public class GoToAmbush : IState {
             {
                 distToCurrChosen = distToCurr;
                 destination = ambushSpots[i];
-                Debug.Log("Destination: " + destination);
             }
         }
 

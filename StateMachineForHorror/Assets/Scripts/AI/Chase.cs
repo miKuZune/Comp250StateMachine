@@ -89,7 +89,6 @@ public class Chase : IState
             destination = playerPos;
         }
         owner.NMA.destination = destination;
-        Debug.Log(destination);
 
         if(IfNearDestination(destination))
         {
