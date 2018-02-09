@@ -40,21 +40,25 @@ public class TextMessageSender : MonoBehaviour {
         for (int i = 0; i <= zoneID - 1; i++)
         { 
             textID += totalTextsPerZone[i];
-            minusOtherZones = totalTextsPerZone[i];
+            minusOtherZones += totalTextsPerZone[i];
         }
 
         textID += sentTextsPerZone[zoneID];
+        Debug.Log(minusOtherZones);
 
         if (textID - minusOtherZones >= totalTextsPerZone[zoneID])
         {
             textID--;
+            textToSend = texts[textID];
         }
         else
         {
+            textToSend = texts[textID];
             sentTextsPerZone[zoneID]++;
+            Debug.Log("TextID++");
         }
-        Debug.Log(textID);
-        textToSend = texts[textID];
+        
+        
 
         return textToSend;
     }
