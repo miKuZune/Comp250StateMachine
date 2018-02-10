@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour {
@@ -8,8 +9,13 @@ public class UIManager : MonoBehaviour {
     public GameObject PauseUI;
     public GameObject EndUI;
 
+    public Text stamina;
+
+    Movement playerMove;
+
     void Start()
     {
+        playerMove = GameObject.FindGameObjectWithTag("Player").GetComponent<Movement>();
         EndUI.SetActive(false);
         PauseUI.SetActive(false);
     }
@@ -20,6 +26,7 @@ public class UIManager : MonoBehaviour {
         {
             Pause();
         }
+        stamina.text = playerMove.stamina + "";
     }
 
 	public void Quit()

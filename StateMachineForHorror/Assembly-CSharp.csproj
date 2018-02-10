@@ -48,9 +48,11 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\AI\AI.cs" />
      <Compile Include="Assets\Scripts\AI\Ambush.cs" />
+     <Compile Include="Assets\Scripts\AI\Chase.cs" />
      <Compile Include="Assets\Scripts\AI\GoToAmbush.cs" />
      <Compile Include="Assets\Scripts\AI\GoToHidingSpot.cs" />
      <Compile Include="Assets\Scripts\AI\Hide.cs" />
+     <Compile Include="Assets\Scripts\AI\TextMessageSender.cs" />
      <Compile Include="Assets\Scripts\AmbushScript.cs" />
      <Compile Include="Assets\Scripts\CamController.cs" />
      <Compile Include="Assets\Scripts\Contacts.cs" />
@@ -60,6 +62,7 @@
      <Compile Include="Assets\Scripts\PhoneStuff\Texts.cs" />
      <Compile Include="Assets\Scripts\PhoneUImanager.cs" />
      <Compile Include="Assets\Scripts\PlayerController.cs" />
+     <Compile Include="Assets\Scripts\RotateToPoint.cs" />
      <Compile Include="Assets\Scripts\StayOnPlayer.cs" />
      <Compile Include="Assets\Scripts\UIManager.cs" />
  <Reference Include="UnityEngine.UI">

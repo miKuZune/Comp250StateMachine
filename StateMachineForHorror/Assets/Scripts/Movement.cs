@@ -10,6 +10,10 @@ public class Movement : MonoBehaviour {
     public float sensitivity;
     public float jumpPower;
 
+    public float stamina;
+    const float maxStamina = 150;
+    public float staminaDepletionRate;
+
     GameObject thisCamera;
     bool hasJumped;
 
@@ -21,6 +25,7 @@ public class Movement : MonoBehaviour {
         Cursor.lockState = CursorLockMode.Locked;
         thisCamera = Camera.main.gameObject;
         hasJumped = false;
+        stamina = maxStamina;
 	}
 
     void MovementHandling(float moveSpeed)
@@ -30,10 +35,18 @@ public class Movement : MonoBehaviour {
 
         
 
-        if (Input.GetKey(KeyCode.LeftShift))
+        if (Input.GetKey(KeyCode.LeftShift) && stamina >= 0)
         {
             x = x * 2;
             z = z * 2;
+            stamina -= staminaDepletionRate * Time.deltaTime;
+        }
+        else
+        {
+            if(stamina < maxStamina)
+            {
+                stamina += (staminaDepletionRate / 2) *  Time.deltaTime;
+            }
         }
 
         Vector3 translateBy = new Vector3(x, 0, z);

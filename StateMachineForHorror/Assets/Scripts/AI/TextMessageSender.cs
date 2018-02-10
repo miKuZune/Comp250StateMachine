@@ -44,7 +44,6 @@ public class TextMessageSender : MonoBehaviour {
         }
 
         textID += sentTextsPerZone[zoneID];
-        Debug.Log(minusOtherZones);
 
         if (textID - minusOtherZones >= totalTextsPerZone[zoneID])
         {
@@ -55,7 +54,6 @@ public class TextMessageSender : MonoBehaviour {
         {
             textToSend = texts[textID];
             sentTextsPerZone[zoneID]++;
-            Debug.Log("TextID++");
         }
         
         
