@@ -34,7 +34,8 @@ public class Chase : IState
 
     public void CatchPlayer()
     {
-        Debug.Log("CaughtPlayer");
+        //Debug.Log("CaughtPlayer");
+        GameObject.Find("UIManager").GetComponent<UIManager>().ShowGameOver();
     }
 
     public void GoToLastKnownPlayerLocation()
