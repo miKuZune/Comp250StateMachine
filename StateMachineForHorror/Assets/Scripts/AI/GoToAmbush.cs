@@ -30,6 +30,7 @@ public class GoToAmbush : IState {
         }
     }
 
+	//Picks the ambush spot closest to the players predicted position
     Vector3 ChooseAmbushSpot()
     {
         Vector3 destination = new Vector3(0, 0, 0);
@@ -46,11 +47,10 @@ public class GoToAmbush : IState {
             }
         }
 
-
-        Debug.Log("Player predicted pos: "+ playerPredictedPos);
         return destination;
     }
 
+	//Setup the ambush spots array to contain all the ambush spots in the AI class.
     void GetAmbushSpots()
     {
         ambushSpots = new Vector3[owner.ambushSpots.Length];

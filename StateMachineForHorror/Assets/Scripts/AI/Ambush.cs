@@ -20,9 +20,9 @@ public class Ambush : IState {
     }
     public void Execute()
     {
+		//Waits a certain time then checks if the player is a signifigant distance away.
         if(timeAtSpot > signifigantTime)
         {
-            
             float distToPlayer = Vector3.Distance(owner.transform.position, owner.currPlayerTransform.transform.position);
             if (distToPlayer > distToBeSignifigant)
             {

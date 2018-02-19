@@ -32,24 +32,13 @@ public class Chase : IState
         }
     }
 
+	//Show the game over screen when the player is caught
     public void CatchPlayer()
     {
-        //Debug.Log("CaughtPlayer");
         GameObject.Find("UIManager").GetComponent<UIManager>().ShowGameOver();
     }
 
-    public void GoToLastKnownPlayerLocation()
-    {
-
-    }
-
-    public void CheckForPlayerEscape()
-    {
-        //Raycast to the player
-        //If the raycast hits something that isn't the player start count down.
-        //If the count down hits a certain point the AI has lost the player
-    }
-
+	//Raycast to the player and see if the raycast is interupted by anything
     bool CheckCanSeePlayer()
     {
 
@@ -84,13 +73,15 @@ public class Chase : IState
     {
         UpdatePlayerPos();
 
+		//Sets the destination to the player position if the AI can see the player
+		//This means if the AI cannot see the player it will go to the last position it saw the player at.
         if(CheckCanSeePlayer())
         {
-            Debug.Log("Can see player");
             destination = playerPos;
         }
         owner.NMA.destination = destination;
 
+		//If the player arrives at a destination it sees which destination it has arrived at and acts accordingly.
         if(IfNearDestination(destination))
         {
             if(destination == playerPos)
@@ -99,10 +90,9 @@ public class Chase : IState
             }
             else
             {
-                Debug.Log("Not going to player pos");
+				//If the AI has arrived at it's destination and cannot see the player then the state is changed.
                 if(!CheckCanSeePlayer())
                 {
-                    Debug.Log("Changing state");
                     owner.state.ChangeState(new GoToHidingSpot(owner));
                 }
             }
