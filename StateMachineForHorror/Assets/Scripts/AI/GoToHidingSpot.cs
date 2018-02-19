@@ -30,6 +30,7 @@ public class GoToHidingSpot : IState {
         }
     }
 
+    //Find a hiding spot which is closest to the AI in the direction of the player.
     Vector3 ChooseHidingSpot()
     {
         //Variables
@@ -45,8 +46,6 @@ public class GoToHidingSpot : IState {
 
         float distToChosenSpot = 2000000; //High number only for use in the loop to compare the lowest distance of hiding spots
         float distToPlayer = Vector3.Distance(owner.transform.position, playerPos.position);
-
-        //float AIplayerAngle = Vector3.Angle(owner.transform.forward, playerPos.position);
 
 
         for (int i = 0; i < hidingSpots.Length; i++)
@@ -89,6 +88,7 @@ public class GoToHidingSpot : IState {
         return destination;
     }
 
+    //Check if the AI has reached where it is going.
     bool CheckIfArrived(Vector3 destination)
     {
         //Get the distance between the AI and the spot he is travelling to.
@@ -112,113 +112,11 @@ public class GoToHidingSpot : IState {
         SM.ChangeState(new Hide(owner));
     }
 
-
-    //LEGACY
-    /*Vector3 GetMoveToPos(Vector3 comparedPos)
-    {
-        Vector3 posToMoveTo = comparedPos;
-        posToMoveTo = Vector3.MoveTowards(posToMoveTo, owner.transform.position, hidingDistFromPlayer);
-
-
-        return posToMoveTo;
-    }*/
-
-
-    //LEGACY
-    /*void GetNextPos()
-    {
-        if (currentDestination == moveToPos1)
-        {
-            currentDestination = moveToPos2;
-            Debug.Log("To pos 2");
-        }
-        else if (currentDestination == moveToPos2)
-        {
-            currentDestination = hidingPos;
-            Debug.Log("To hiding pos");
-        }
-        else if (currentDestination == hidingPos)
-        {
-            SetToHideState();
-        }
-    }*/
-
-    bool CheckIfNearPlayer()
-    {
-        //Const variables
-        const float minDistFromPlayer = 35f;
-
-        float distFromPlayer = Vector3.Distance(owner.transform.position, playerPos.position);
-        if(distFromPlayer <= minDistFromPlayer)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    /*Vector3 MoveAwayFromPlayer()
-    {
-        //Direction = (posA - posB) / distance[between posA and posB]
-        Debug.Log("GET AWAY!");
-
-        const float moveAwayAmount = 15f;
-
-        Vector3 AiPlayerDir = playerPos - owner.transform.position;
-        float AiPlayerDist = Vector3.Distance(playerPos, owner.transform.position);
-        AiPlayerDir = AiPlayerDir / AiPlayerDist;
-
-        Vector3 AiHidingSpotDir = hidingPos;
-        float AiHideSpotDist = Vector3.Distance(hidingPos, owner.transform.position);
-        AiHidingSpotDir = AiHidingSpotDir / AiHideSpotDist;
-        float AiHidingSpotAngle = Vector3.Angle(hidingPos, owner.transform.position);
-
-        Vector3 newDir;
-
-        if(AiHidingSpotAngle >= 0)
-        {
-            newDir = AiPlayerDir + owner.transform.right;
-        }
-        else
-        {
-            newDir = AiPlayerDir - owner.transform.right;
-        }
-
-        Vector3 newMoveToPos = newDir * moveAwayAmount;
-
-        return newMoveToPos;
-        /*
-        Psudocode for checking if too close to player
-     
-        START
-        if(distanceToPlayer < certainDistance)
-            THEN
-        AItoPlayerDir = playerPos - AIpos
-        AItoPlayerDir =AItoPlayerDir / distBetweenAInPlayer
-
-        DirectionToHidingSpot = hidingSpotPos - AIpos
-        DirToHideAngle = getAngle(DirectionToHidingSpot)
-
-        if(DirToHideAngle > 0)
-           THEN
-        NewDir = AItoPlayerDir + RightDir
-        else
-            THEN
-        NewDir = AItoPlayerDir - RightDir
-
-        NewMoveToPos = NewDir * distanceToGo
-    
-    }*/
-
+    //Get the current player position from the AI class.
     void UpdatePlayerPos()
     {
         playerPos = owner.currPlayerTransform;
     }
-
-
-    
 
     public void Enter()
     {
@@ -242,34 +140,15 @@ public class GoToHidingSpot : IState {
 
     public void Execute()
     {
+        //Update knowledge of where the player is.
         UpdatePlayerPos();
-        
+        //Set the destination
         owner.NMA.destination = currentDestination;
-        //owner.transform.position = Vector3.MoveTowards(owner.transform.position, hidingPos, moveSpeed * Time.deltaTime);
 
         if(CheckIfArrived(currentDestination))
         {
-
             SetToHideState();
         }
-        
-
-        /*if (CheckIfNearPlayer())
-        {
-            currentDestination = MoveAwayFromPlayer();
-        }
-        if (CheckIfArrived(currentDestination))
-        {
-            if(currentDestination != hidingPos)
-            {
-                currentDestination = hidingPos;
-                //Debug.Log("Arrived at pos away from player");
-            }
-            else
-            {
-                SetToHideState();
-            }
-        }*/
     }
 
     public void Exit()

@@ -13,11 +13,14 @@ public class Hide : IState {
     //Variables
     Vector3 playerPos;
 
+    //Check how far away the player is and return true if it is signifigant.
     bool PlayerDistSignifigant()
     {
         float distToBeSignifigant = 50f;
-        float dist = Vector3.Distance(playerPos, owner.transform.position);
-        if (dist > distToBeSignifigant)
+
+        float distToPlayer = Vector3.Distance(playerPos, owner.transform.position);
+
+        if (distToPlayer > distToBeSignifigant)
         {
             return true;
         }
@@ -27,6 +30,7 @@ public class Hide : IState {
         }
     }
 
+    //Checks if the player is moving toward a position where they could be ambushed.
     bool CouldAmbush(Vector3 playerPredictedPos, Vector3[] ambushSpots)
     {
         if(owner.timesPlayerPosUpdated >= owner.playerDir.Length)
@@ -52,8 +56,11 @@ public class Hide : IState {
 
     public void Enter()
     {
+
         SM = owner.state;
+
         ambushSpots = new Vector3[owner.ambushSpots.Length];
+        //Get all the ambush spots from the AI class.
         for (int i = 0; i < ambushSpots.Length; i++)
         {
             ambushSpots[i] = owner.ambushSpots[i].transform.position;
@@ -63,11 +70,11 @@ public class Hide : IState {
     }
     public void Execute()
     {
+        //Update the current player position
         playerPos = owner.currPlayerTransform.position;
-
-        //Vector3 predictedPos = owner.PredictPlayerPosition(playerPos);
+        //Get the predicted position of the player.
         Vector3 predictedPos = owner.PredictPlayerDirection();
-        //Debug.Log("predicted: " + predictedPos);
+
         if (CouldAmbush(predictedPos, ambushSpots))
         {
             SM.ChangeState(new GoToAmbush(owner));
@@ -77,12 +84,6 @@ public class Hide : IState {
             SM.ChangeState(new GoToHidingSpot(owner));
         }
 
-        if(Input.GetKeyDown(KeyCode.Q))
-        {
-            Vector3 spawnPos = playerPos + (owner.PredictPlayerDirection());
-            GameObject.Instantiate(owner.temp, spawnPos, Quaternion.identity);
-            Debug.Log(owner.timesPlayerPosUpdated);
-        }
     }
     public void Exit()
     {

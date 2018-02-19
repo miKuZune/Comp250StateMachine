@@ -5,6 +5,7 @@ using UnityEngine.AI;
 
 public interface IState
 {
+    //Declare variables that must be in each class that inherits from IState
     void Enter();
     void Execute();
     void Exit();
@@ -12,23 +13,23 @@ public interface IState
 
 public class StateMachine
 {
+    //Defines the current state of the AI
     IState currentState;
 
+    //Allows the AI to a new state
     public void ChangeState(IState newState)
     {
+        //Check if there is a current state and perform the Exit function if there is.
         if(currentState != null)
         {
             currentState.Exit();
         }
+        //Define the new state and perfrom the enter function of that state.
         currentState = newState;
         currentState.Enter();
     }
 
-    public IState GetState()
-    {
-        return currentState;
-    }
-
+    //Performs the Execute function of the current state every tick.
     public void Update()
     {
         if(currentState != null)
@@ -65,13 +66,9 @@ public class AI : MonoBehaviour {
     public Vector3 ambushSpotToGoTo = new Vector3(0, 0, 0);
 
     public float moveSpeed;
-
-    //{Delete me plz}
-    public GameObject temp;
-
     #endregion
 
-
+    //Predict the player's direction based upon an array of player directions
     public Vector3 PredictPlayerDirection()
     {
         const float dirWeight = 10;
@@ -90,90 +87,48 @@ public class AI : MonoBehaviour {
 
         predictedDir += weightedPrediction;
         predictedDir *= distanceMultiplier;
-       // predictedDir = predictedDir / playerDir.Length;
-
-        
 
         return predictedDir;
     }
 
+    //Take the current player direction and add it to the array of player directions
     void UpdatePlayerDirArray(Vector3 addedDir)
     {
-        
-
+        //Holds the direction for use across iterations of the loop.
         Vector3 holdingVec = playerDir[0];
+        //Goes through each value in the array and moves it one position down
         for (int i = 1; i < playerTransformNum; i++)
         {
-            //Debug.Log(playerDir[i]);
             Vector3 temp = playerDir[i];
             playerDir[i] = holdingVec;
             holdingVec = temp;
         }
-        timesPlayerPosUpdated++;
+        
+        //Stores the new direction in the first spot of the array.
         playerDir[0] = addedDir;
-    }
 
-    /*public Vector3 PredictPlayerPosition(Vector3 currPos)
-    {
-        Vector3 predictedPos = new Vector3(0, 0, 0);
-        Vector3 weightedDiff = new Vector3(0, 0, 0);
-        Vector3 difference = new Vector3(0,0,0);
-
-        float weightedDiffMultiplyer = 2.5f;
-        float predictedPosMultiplyer = 2f;
-
-        float predictedPosY = 1f;
-
-        weightedDiff = playerPos[0] - playerPos[1];
-        weightedDiff = weightedDiff * weightedDiffMultiplyer;
-
-        for(int i = 1; i < playerPos.Length - 1; i++)
-        {
-            difference += (playerPos[i + 1] - playerPos[i]);
-        }
-        difference = difference / playerPos.Length;
-
-        predictedPos = currPos + weightedDiff + difference;
-        predictedPos = predictedPos * predictedPosMultiplyer;
-
-        predictedPos.y = predictedPosY;
-
-        //Debug.Log("Predicted: " + predictedPos);
-        //Instantiate(temp, predictedPos, Quaternion.identity);
-        return predictedPos;
-    }*/
-
-    void UpdatePlayerPositionArray(Vector3 position)
-    {
-        //Move values in the array to the position beneath themselves
-            //Holds a value taken from one iteration, to be taken into the next iteration.
-        Vector3 holdingVec = playerPos[0];
-        for(int i = 1; i < playerTransformNum; i++)
-        {
-            //Debug.Log(playerPos[i]);
-            Vector3 temp = playerPos[i];
-            playerPos[i] = holdingVec;
-            holdingVec = temp;
-        }
-        //Sets the first player pos to the player's current position.
-        playerPos[0] = position;
-
+        //Counts the number of times this operation has been performed.
         timesPlayerPosUpdated++;
     }
 
+
+    //Check if the player is close enough and can be seen to enter the chase state
     bool CheckForChasePlayer()
     {
+
         bool canChase = false;
 
+        //Check value for how close the player has to be to enter the chase state.
         const float distToBeCloseEnough = 12.5f;
+        //Calculate and store the distance to the player.
         float distToPlayer = Vector3.Distance(transform.position, currPlayerTransform.position);
-
-        
 
         if(distToPlayer <= distToBeCloseEnough)
         {
+            //Calculate the direction & distance to the player
             Vector3 dirToPlayer = currPlayerTransform.position - transform.position;
             RaycastHit hit;
+            //Raycast using the direction & distance to see if anything is in the way 
             if(Physics.Raycast(transform.position,dirToPlayer, out hit))
             {
                 if(hit.transform.gameObject.tag == "Player")
@@ -189,24 +144,24 @@ public class AI : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
     {
+        //Find all the ambush spots in the map
         for(int i = 0; i < ambushSpots.Length; i++)
         {
             string finder = "AmbushSpot (" + i + ")";
             
             ambushSpots[i] = GameObject.Find(finder);
         }
-
+        //Find all the hiding spots in the map
         for(int i = 0; i < hidingSpots.Length; i++)
         {
             string finder = "HidingSpot (" + i + ")";
             hidingSpots[i] = GameObject.Find(finder);
-            //Debug.Log(hidingSpots[i]);
         }
 
-        
+        //Define the nav mesh agent to control
         NMA = GetComponent<NavMeshAgent>();
+        //Set the initial state of the AI.
         state.ChangeState(new GoToHidingSpot(this));
-        Debug.Log(NMA);
     }
 	
 	// Update is called once per frame
@@ -224,16 +179,10 @@ public class AI : MonoBehaviour {
             UpdatePlayerDirArray(currPlayerTransform.forward);
             updatePlayerPosTimer = 0;
         }
-        //Predict where the player whill be based upon their movements
-        /*if(timesPlayerPosUpdated >= playerPos.Length)
-        {
-            //PredictPlayerPosition(currPlayerTransform.position);
-            ChooseAmbushSpot(PredictPlayerPosition(currPlayerTransform.position));
-            timesPlayerPosUpdated = 0;
-        }*/
-
+        //Timer to check if it is time to update the player dir
         updatePlayerPosTimer += Time.deltaTime;
 
+        //Perform the Update function of the current state.
         state.Update();
 	}
 }
