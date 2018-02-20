@@ -8,6 +8,7 @@ public class UIManager : MonoBehaviour {
 
     public GameObject PauseUI;
     public GameObject EndUI;
+    public GameObject WinUI;
 
     public Text stamina;
 
@@ -18,6 +19,7 @@ public class UIManager : MonoBehaviour {
         playerMove = GameObject.FindGameObjectWithTag("Player").GetComponent<Movement>();
         EndUI.SetActive(false);
         PauseUI.SetActive(false);
+        WinUI.SetActive(false);
     }
 
     void Update()
@@ -45,6 +47,13 @@ public class UIManager : MonoBehaviour {
         PauseUI.SetActive(false);
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+    }
+
+    public void WinGame()
+    {
+        WinUI.SetActive(true);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
     public void Pause()
